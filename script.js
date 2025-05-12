@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 hover: true,
             },
             physics: {
-                enabled: false,
+                enabled: true,
             },
             nodes: {
                 shape: 'box',
