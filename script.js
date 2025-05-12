@@ -1,177 +1,137 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Comprehensive data source for all potential nodes
-    const allNodesData = {
-        1: { id: 1, label: 'Knowledge', title: 'Root: All Knowledge', level: 0, childIds: [2, 3, 1000, 2000], expanded: false },
-        
-        // Science Branch (IDs 2-999)
-        2: { id: 2, label: 'Science', title: 'Category: Science', level: 1, childIds: [4, 5, 11, 12], expanded: false },
-        4: { id: 4, label: 'Physics', title: 'Field: Physics', level: 2, childIds: [8, 9, 13, 14], expanded: false },
-        5: { id: 5, label: 'Biology', title: 'Field: Biology', level: 2, childIds: [10, 15, 16], expanded: false },
-        8: { id: 8, label: 'Classical Mechanics', title: 'Subfield: Classical Mechanics', level: 3, childIds: [17, 18], expanded: false },
-        9: { id: 9, label: 'Quantum Mechanics', title: 'Subfield: Quantum Mechanics', level: 3, childIds: [19, 20], expanded: false },
-        10: { id: 10, label: 'Genetics', title: 'Subfield: Genetics', level: 3, childIds: [21, 22], expanded: false },
-        11: { id: 11, label: 'Chemistry', title: 'Field: Chemistry', level: 2, childIds: [23, 24, 25], expanded: false },
-        12: { id: 12, label: 'Earth Science', title: 'Field: Earth Science', level: 2, childIds: [26, 27], expanded: false },
-        13: { id: 13, label: 'Thermodynamics', title: 'Subfield: Thermodynamics', level: 3, childIds: [], expanded: false },
-        14: { id: 14, label: 'Electromagnetism', title: 'Subfield: Electromagnetism', level: 3, childIds: [], expanded: false },
-        15: { id: 15, label: 'Evolutionary Biology', title: 'Subfield: Evolutionary Biology', level: 3, childIds: [], expanded: false },
-        16: { id: 16, label: 'Ecology', title: 'Subfield: Ecology', level: 3, childIds: [], expanded: false },
-        17: { id: 17, label: 'Newtonian Physics', title: 'Topic: Newtonian Physics', level: 4, childIds: [], expanded: false },
-        18: { id: 18, label: 'Lagrangian Mechanics', title: 'Topic: Lagrangian Mechanics', level: 4, childIds: [], expanded: false },
-        19: { id: 19, label: 'Quantum Entanglement', title: 'Topic: Quantum Entanglement', level: 4, childIds: [], expanded: false },
-        20: { id: 20, label: 'String Theory', title: 'Topic: String Theory (Conceptual)', level: 4, childIds: [], expanded: false },
-        21: { id: 21, label: 'DNA Replication', title: 'Topic: DNA Replication', level: 4, childIds: [], expanded: false },
-        22: { id: 22, label: 'CRISPR', title: 'Topic: CRISPR Gene Editing', level: 4, childIds: [], expanded: false },
-        23: { id: 23, label: 'Organic Chemistry', title: 'Subfield: Organic Chemistry', level: 3, childIds: [], expanded: false },
-        24: { id: 24, label: 'Inorganic Chemistry', title: 'Subfield: Inorganic Chemistry', level: 3, childIds: [], expanded: false },
-        25: { id: 25, label: 'Physical Chemistry', title: 'Subfield: Physical Chemistry', level: 3, childIds: [], expanded: false },
-        26: { id: 26, label: 'Geology', title: 'Subfield: Geology', level: 3, childIds: [], expanded: false },
-        27: { id: 27, label: 'Meteorology', title: 'Subfield: Meteorology', level: 3, childIds: [], expanded: false },
+    let allNodesData = {}; // To be populated from JSON
 
-        // Humanities Branch (IDs 3, 6, 7, 100-999 reserved for more humanities if needed)
-        3: { id: 3, label: 'Humanities', title: 'Category: Humanities', level: 1, childIds: [6, 7, 28, 29], expanded: false },
-        6: { id: 6, label: 'History', title: 'Field: History', level: 2, childIds: [30, 31], expanded: false },
-        7: { id: 7, label: 'Literature', title: 'Field: Literature', level: 2, childIds: [32, 33], expanded: false },
-        28: { id: 28, label: 'Philosophy', title: 'Field: Philosophy', level: 2, childIds: [34, 35], expanded: false },
-        29: { id: 29, label: 'Arts', title: 'Field: Arts', level: 2, childIds: [36, 37], expanded: false },
-        30: { id: 30, label: 'Ancient History', title: 'Period: Ancient History', level: 3, childIds: [], expanded: false },
-        31: { id: 31, label: 'Modern History', title: 'Period: Modern History', level: 3, childIds: [], expanded: false },
-        32: { id: 32, label: 'Poetry', title: 'Genre: Poetry', level: 3, childIds: [], expanded: false },
-        33: { id: 33, label: 'Prose', title: 'Genre: Prose', level: 3, childIds: [], expanded: false },
-        34: { id: 34, label: 'Ethics', title: 'Branch: Ethics', level: 3, childIds: [], expanded: false },
-        35: { id: 35, label: 'Metaphysics', title: 'Branch: Metaphysics', level: 3, childIds: [], expanded: false },
-        36: { id: 36, label: 'Music', title: 'Discipline: Music', level: 3, childIds: [], expanded: false },
-        37: { id: 37, label: 'Visual Arts', title: 'Discipline: Visual Arts', level: 3, childIds: [], expanded: false },
+    // Function to initialize the graph and set up interactions
+    function initializeGraph(nodesData) {
+        allNodesData = nodesData; // Store loaded data globally for click handlers
 
-        // Technology Branch (IDs 1000-1999)
-        1000: { id: 1000, label: 'Technology', title: 'Category: Technology', level: 1, childIds: [1001, 1002, 1003], expanded: false },
-        1001: { id: 1001, label: 'Computer Science', title: 'Field: Computer Science', level: 2, childIds: [1004, 1005, 1006], expanded: false },
-        1002: { id: 1002, label: 'Engineering', title: 'Field: Engineering', level: 2, childIds: [1007, 1008], expanded: false },
-        1003: { id: 1003, label: 'Biotechnology', title: 'Field: Biotechnology', level: 2, childIds: [10, 22], expanded: false },
-        1004: { id: 1004, label: 'Artificial Intelligence', title: 'Subfield: AI', level: 3, childIds: [1009, 1010], expanded: false },
-        1005: { id: 1005, label: 'Software Development', title: 'Subfield: Software Development', level: 3, childIds: [1011, 1012], expanded: false },
-        1006: { id: 1006, label: 'Data Science', title: 'Subfield: Data Science', level: 3, childIds: [], expanded: false },
-        1007: { id: 1007, label: 'Mechanical Engineering', title: 'Branch: Mechanical Engineering', level: 3, childIds: [], expanded: false },
-        1008: { id: 1008, label: 'Electrical Engineering', title: 'Branch: Electrical Engineering', level: 3, childIds: [], expanded: false },
-        1009: { id: 1009, label: 'Machine Learning', title: 'Topic: Machine Learning', level: 4, childIds: [], expanded: false },
-        1010: { id: 1010, label: 'Natural Language Processing', title: 'Topic: NLP', level: 4, childIds: [], expanded: false },
-        1011: { id: 1011, label: 'Web Development', title: 'Area: Web Development', level: 4, childIds: [], expanded: false },
-        1012: { id: 1012, label: 'Mobile Development', title: 'Area: Mobile Development', level: 4, childIds: [], expanded: false },
-
-        // Mathematics Branch (IDs 2000-2999)
-        2000: { id: 2000, label: 'Mathematics', title: 'Category: Mathematics', level: 1, childIds: [2001, 2002, 2003], expanded: false },
-        2001: { id: 2001, label: 'Algebra', title: 'Field: Algebra', level: 2, childIds: [2004, 2005], expanded: false },
-        2002: { id: 2002, label: 'Calculus', title: 'Field: Calculus', level: 2, childIds: [2006, 2007], expanded: false },
-        2003: { id: 2003, label: 'Geometry', title: 'Field: Geometry', level: 2, childIds: [2008, 2009], expanded: false },
-        2004: { id: 2004, label: 'Linear Algebra', title: 'Subfield: Linear Algebra', level: 3, childIds: [], expanded: false },
-        2005: { id: 2005, label: 'Abstract Algebra', title: 'Subfield: Abstract Algebra', level: 3, childIds: [], expanded: false },
-        2006: { id: 2006, label: 'Differential Calculus', title: 'Topic: Differential Calculus', level: 3, childIds: [], expanded: false },
-        2007: { id: 2007, label: 'Integral Calculus', title: 'Topic: Integral Calculus', level: 3, childIds: [], expanded: false },
-        2008: { id: 2008, label: 'Euclidean Geometry', title: 'Subfield: Euclidean Geometry', level: 3, childIds: [], expanded: false },
-        2009: { id: 2009, label: 'Topology', title: 'Subfield: Topology', level: 3, childIds: [], expanded: false },
-    };
-
-    // Initial node (root)
-    const initialNode = JSON.parse(JSON.stringify(allNodesData[1])); // Deep copy
-    delete initialNode.childIds; // childIds is not a vis.js node property
-    delete initialNode.expanded; // expanded is not a vis.js node property
-
-    const nodes = new vis.DataSet([initialNode]);
-    const edges = new vis.DataSet([]);
-
-    // Get the container element
-    const container = document.getElementById('knowledgeGraph');
-
-    // Provide the data in the vis format
-    const data = {
-        nodes: nodes,
-        edges: edges,
-    };
-
-    const options = {
-        layout: {
-            hierarchical: {
-                enabled: true,
-                levelSeparation: 150,
-                nodeSpacing: 150, // Increased for better spacing
-                treeSpacing: 200,
-                direction: 'UD', // Up-Down
-                sortMethod: 'directed',
-            },
-        },
-        interaction: {
-            navigationButtons: true,
-            keyboard: true,
-            hover: true, // Show title on hover
-        },
-        physics: {
-            enabled: false,
-        },
-        nodes: {
-            shape: 'box',
-            margin: 10,
-            widthConstraint: { minimum: 100, maximum: 200 },
-            font: {
-                size: 14,
-                multi: 'html', // Allow HTML in labels if needed later
-            },
-            borderWidth: 1,
-            shadow: true,
-        },
-        edges: {
-            smooth: {
-                type: 'cubicBezier',
-                forceDirection: 'vertical',
-                roundness: 0.4,
-            },
-            arrows: 'to',
-            color: {
-                color: '#848484',
-                highlight: '#848484',
-                hover: '#848484',
-            }
-        },
-    };
-
-    // Initialize the network!
-    const network = new vis.Network(container, data, options);
-
-    network.on('click', function (params) {
-        if (params.nodes.length > 0) {
-            const clickedNodeId = params.nodes[0];
-            const nodeData = allNodesData[clickedNodeId];
-
-            if (nodeData && !nodeData.expanded && nodeData.childIds && nodeData.childIds.length > 0) {
-                const newNodesToAdd = [];
-                const newEdgesToAdd = [];
-
-                nodeData.childIds.forEach(childId => {
-                    if (!nodes.get(childId)) { // Check if node already exists
-                        const childNodeDefinition = allNodesData[childId];
-                        if (childNodeDefinition) {
-                            // Prepare a clean node object for vis.js
-                            const visNode = { 
-                                id: childNodeDefinition.id, 
-                                label: childNodeDefinition.label, 
-                                title: childNodeDefinition.title, 
-                                level: childNodeDefinition.level 
-                            };
-                            newNodesToAdd.push(visNode);
-                            newEdgesToAdd.push({ from: clickedNodeId, to: childId });
-                        }
-                    }
-                });
-
-                if (newNodesToAdd.length > 0) {
-                    nodes.add(newNodesToAdd);
-                }
-                if (newEdgesToAdd.length > 0) {
-                    edges.add(newEdgesToAdd);
-                }
-                
-                // Mark as expanded in our source data
-                allNodesData[clickedNodeId].expanded = true; 
-            }
+        const initialNodeData = allNodesData['1']; // Assuming root node ID is '1'
+        if (!initialNodeData) {
+            console.error('Root node (ID 1) not found in loaded data.');
+            return;
         }
-    });
+
+        // Prepare a clean initial node for vis.js
+        const initialVisNode = {
+            id: initialNodeData.id,
+            label: initialNodeData.label,
+            title: initialNodeData.title,
+            level: initialNodeData.level
+        };
+
+        const nodes = new vis.DataSet([initialVisNode]);
+        const edges = new vis.DataSet([]);
+
+        const container = document.getElementById('knowledgeGraph');
+        const data = {
+            nodes: nodes,
+            edges: edges,
+        };
+
+        const options = {
+            layout: {
+                hierarchical: {
+                    enabled: true,
+                    levelSeparation: 150,
+                    nodeSpacing: 150,
+                    treeSpacing: 200,
+                    direction: 'UD',
+                    sortMethod: 'directed',
+                },
+            },
+            interaction: {
+                navigationButtons: true,
+                keyboard: true,
+                hover: true,
+            },
+            physics: {
+                enabled: false,
+            },
+            nodes: {
+                shape: 'box',
+                margin: 10,
+                widthConstraint: { minimum: 100, maximum: 200 },
+                font: {
+                    size: 14,
+                    multi: 'html',
+                },
+                borderWidth: 1,
+                shadow: true,
+            },
+            edges: {
+                smooth: {
+                    type: 'cubicBezier',
+                    forceDirection: 'vertical',
+                    roundness: 0.4,
+                },
+                arrows: 'to',
+                color: {
+                    color: '#848484',
+                    highlight: '#848484',
+                    hover: '#848484',
+                }
+            },
+        };
+
+        const network = new vis.Network(container, data, options);
+
+        network.on('click', function (params) {
+            if (params.nodes.length > 0) {
+                const clickedNodeId = params.nodes[0];
+                // Ensure allNodesData is the one loaded from JSON
+                const nodeData = allNodesData[clickedNodeId.toString()]; 
+
+                if (nodeData && !nodeData.expanded && nodeData.childIds && nodeData.childIds.length > 0) {
+                    const newNodesToAdd = [];
+                    const newEdgesToAdd = [];
+
+                    nodeData.childIds.forEach(childId => {
+                        const childIdStr = childId.toString();
+                        if (!nodes.get(childIdStr)) { // Check if node already exists
+                            const childNodeDefinition = allNodesData[childIdStr];
+                            if (childNodeDefinition) {
+                                const visNode = { 
+                                    id: childNodeDefinition.id, 
+                                    label: childNodeDefinition.label, 
+                                    title: childNodeDefinition.title, 
+                                    level: childNodeDefinition.level 
+                                };
+                                newNodesToAdd.push(visNode);
+                                newEdgesToAdd.push({ from: clickedNodeId, to: childNodeDefinition.id });
+                            }
+                        }
+                    });
+
+                    if (newNodesToAdd.length > 0) {
+                        nodes.add(newNodesToAdd);
+                    }
+                    if (newEdgesToAdd.length > 0) {
+                        edges.add(newEdgesToAdd);
+                    }
+                    
+                    allNodesData[clickedNodeId.toString()].expanded = true; 
+                }
+            }
+        });
+    }
+
+    // Fetch the external JSON data
+    fetch('knowledge_data.json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(jsonData => {
+            initializeGraph(jsonData); // Initialize graph with fetched data
+        })
+        .catch(error => {
+            console.error('Error fetching or parsing knowledge_data.json:', error);
+            // Optionally, display an error message to the user in the UI
+            const container = document.getElementById('knowledgeGraph');
+            if (container) {
+                container.innerHTML = '<p style="color: red; text-align: center;">Failed to load knowledge graph data. Please check the console for errors.</p>';
+            }
+        });
 }); 
