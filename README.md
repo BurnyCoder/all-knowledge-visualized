@@ -48,3 +48,8 @@ The knowledge graph starts with a single root node. When you click on a node, it
 - CSS3
 - JavaScript
 - Vis.js library for network visualization 
+
+## Todo
+
+- Generate subtopics nodes realtime using websearch and LLM call, cache it
+- Add "search on google" "open on wiki" "explain" buttons
