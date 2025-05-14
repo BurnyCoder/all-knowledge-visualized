@@ -53,3 +53,6 @@ The knowledge graph starts with a single root node. When you click on a node, it
 
 - Generate subtopics nodes realtime using websearch and LLM call, cache it
 - Add "search on google" "open on wiki" "explain" buttons
+- Removable buttons 
+- Automatic hypergraph categorizing of existing nodes 
+- If you generate a node that already exists, connect already existing node
